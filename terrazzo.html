@@ -29,13 +29,12 @@ select option{background:#0d1030}
 .step{display:flex;align-items:center;gap:12px;padding:11px 14px;background:rgba(255,255,255,.04);border-radius:9px;border:1px solid rgba(255,255,255,.06)}
 .snum{width:26px;height:26px;border-radius:50%;background:rgba(200,168,0,.15);border:1px solid rgba(200,168,0,.3);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#c8a800;flex-shrink:0}
 .sinfo{flex:1}
-/* Nom + grain sur la même ligne */
-.sname{font-size:.95rem;font-weight:600;color:#e8e8e8;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.grain{font-size:.95rem;font-weight:800;color:#c8a800}
-/* Note en dessous */
-.sdet{font-size:.76rem;color:rgba(255,255,255,.38);margin-top:3px}
-/* Badge eau — bien visible en bleu */
-.eau-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(30,136,229,.25);border:1px solid rgba(30,136,229,.5);color:#64B5F6;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:5px;margin-top:4px}
+/* Nom + grain sur la même ligne avec espacement généreux */
+.sname{font-size:.95rem;font-weight:600;color:#e8e8e8;display:flex;align-items:center;gap:0}
+.sname-text{margin-right:16px}
+.grain{font-size:.95rem;font-weight:800;color:#c8a800;letter-spacing:.5px}
+.sdet{font-size:.76rem;color:rgba(255,255,255,.38);margin-top:4px}
+.eau-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(30,136,229,.25);border:1px solid rgba(30,136,229,.5);color:#64B5F6;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:5px;margin-top:4px}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 .tag{padding:4px 11px;border-radius:6px;font-size:.76rem;font-weight:600}
 .te{background:rgba(33,150,243,.12);color:#64B5F6;border:1px solid rgba(33,150,243,.2)}
@@ -72,21 +71,23 @@ select option{background:#0d1030}
 </div>
 <script>
 const MACHINES={
-  "Scoot":           {diam:125,diamMachine:125, pla:0,pads:1,hur:0,pucks:0,turbo:1,resine:1},
-  "Scoot Bouchardes":{diam:125,diamMachine:125, pla:0,pads:1,hur:0,pucks:0,turbo:1,resine:1},
-  "Scoot Stand Up":  {diam:125,diamMachine:125, pla:0,pads:1,hur:0,pucks:0,turbo:1,resine:1},
-  "L14EU":           {diam:335,diamMachine:335, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0},
-  "SH270MLC":        {diam:270,diamMachine:270, pla:0,pads:0,hur:0,pucks:0,turbo:0,resine:0},
-  "SH270M":          {diam:270,diamMachine:270, pla:0,pads:0,hur:0,pucks:0,turbo:0,resine:0},
-  "BU270M":          {diam:270,diamMachine:270, pla:0,pads:0,hur:0,pucks:0,turbo:0,resine:0},
-  "SH320T":          {diam:250,diamMachine:250, pla:0,pads:0,hur:0,pucks:0,turbo:0,resine:0},
-  "TH500M":          {diam:250,diamMachine:500, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0},
-  "TH500T":          {diam:250,diamMachine:500, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0},
-  "L16EU":           {diam:180,diamMachine:430, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0},
-  "L20OES7":         {diam:230,diamMachine:500, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0},
-  "L25RES7":         {diam:230,diamMachine:650, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0},
-  "L31RES7":         {diam:335,diamMachine:800, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0},
-  "L38GREB":         {diam:335,diamMachine:1000,pla:1,pads:0,hur:0,pucks:0,turbo:0,resine:0}
+  // Scoot = bordurage uniquement
+  "Scoot":           {diam:125,diamMachine:125, pla:0,pads:1,hur:0,pucks:0,turbo:1,resine:1, granito:false, bordurage:true},
+  "Scoot Bouchardes":{diam:125,diamMachine:125, pla:0,pads:1,hur:0,pucks:0,turbo:1,resine:1, granito:false, bordurage:true},
+  "Scoot Stand Up":  {diam:125,diamMachine:125, pla:0,pads:1,hur:0,pucks:0,turbo:1,resine:1, granito:false, bordurage:true},
+  // L14EU = granito = bordurage (même protocole)
+  "L14EU":           {diam:335,diamMachine:335, pla:1,pads:1,hur:1,pucks:1,turbo:1,resine:1, granito:true, bordurage:true, l14:true},
+  "SH270MLC":        {diam:270,diamMachine:270, pla:0,pads:0,hur:0,pucks:0,turbo:0,resine:0, granito:false, bordurage:false},
+  "SH270M":          {diam:270,diamMachine:270, pla:0,pads:0,hur:0,pucks:0,turbo:0,resine:0, granito:false, bordurage:false},
+  "BU270M":          {diam:270,diamMachine:270, pla:0,pads:0,hur:0,pucks:0,turbo:0,resine:0, granito:false, bordurage:false},
+  "SH320T":          {diam:250,diamMachine:250, pla:0,pads:0,hur:0,pucks:0,turbo:0,resine:0, granito:false, bordurage:false},
+  "TH500M":          {diam:250,diamMachine:500, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0, granito:true, bordurage:false},
+  "TH500T":          {diam:250,diamMachine:500, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0, granito:true, bordurage:false},
+  "L16EU":           {diam:180,diamMachine:430, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0, granito:true, bordurage:false},
+  "L20OES7":         {diam:230,diamMachine:500, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0, granito:true, bordurage:false},
+  "L25RES7":         {diam:230,diamMachine:650, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0, granito:true, bordurage:false},
+  "L31RES7":         {diam:335,diamMachine:800, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0, granito:true, bordurage:false},
+  "L38GREB":         {diam:335,diamMachine:1000,pla:1,pads:0,hur:0,pucks:0,turbo:0,resine:0, granito:false, bordurage:false}
 };
 
 const PROTOCOLE_GRANITO=[
@@ -119,12 +120,9 @@ const PROTOCOLE_BORDURAGE=[
 ];
 
 const TOOL_KEY={
-  "Plaquettes liant métal":"pla",
-  "Pads souples Métal":"pads",
-  "Pucks résine Blanche":"pucks",
-  "Hurricane":"hur",
-  "Plateau Turbo M14":"turbo",
-  "Pads Résine Souples":"resine"
+  "Plaquettes liant métal":"pla","Pads souples Métal":"pads",
+  "Pucks résine Blanche":"pucks","Hurricane":"hur",
+  "Plateau Turbo M14":"turbo","Pads Résine Souples":"resine"
 };
 
 function go(){
@@ -133,19 +131,31 @@ function go(){
   if(!mNom){document.getElementById("res").style.display="none";return;}
   const m=MACHINES[mNom];
   document.getElementById("res").style.display="block";
-  const showG=!trav||trav==="granito";
-  const showB=!trav||trav==="bordurage";
-  const canG=m.pla||m.pads||m.pucks||m.hur;
-  const canB=m.turbo||m.resine||m.pads||m.hur;
+
   let html=`<div class="tags"><span class="tag te">Ø outil : ${m.diam} mm</span><span class="tag ts">Ø machine : ${m.diamMachine} mm</span></div>`;
-  if(showG) html+=renderProto(m,"Ponçage Granito",PROTOCOLE_GRANITO,canG);
-  if(showB) html+=renderProto(m,"Bordurage",PROTOCOLE_BORDURAGE,canB);
+
+  // L14EU : granito = bordurage, on affiche le protocole granito dans les deux cas
+  if(m.l14){
+    if(!trav || trav==="granito" || trav==="bordurage"){
+      html+=renderProto(m,"Ponçage Granito / Bordurage",PROTOCOLE_GRANITO,true);
+    }
+  } else {
+    const showG=!trav||trav==="granito";
+    const showB=!trav||trav==="bordurage";
+    if(showG) html+=m.granito
+      ? renderProto(m,"Ponçage Granito",PROTOCOLE_GRANITO,true)
+      : `<div class="mc" style="opacity:.4"><div class="mn">Ponçage Granito <span style="font-size:.8rem;color:rgba(255,255,255,.3);font-weight:400">— non compatible avec cette machine</span></div></div>`;
+    if(showB) html+=m.bordurage
+      ? renderProto(m,"Bordurage",PROTOCOLE_BORDURAGE,true)
+      : `<div class="mc" style="opacity:.4"><div class="mn">Bordurage <span style="font-size:.8rem;color:rgba(255,255,255,.3);font-weight:400">— non compatible avec cette machine</span></div></div>`;
+  }
+
   document.getElementById("rc").textContent=mNom+" — Protocole AD LUCEM";
   document.getElementById("rl").innerHTML=html;
 }
 
 function renderProto(m,titre,proto,ok){
-  if(!ok) return`<div class="mc" style="opacity:.4"><div class="mn">${titre} <span style="font-size:.8rem;color:rgba(255,255,255,.3);font-weight:400">— non compatible</span></div></div>`;
+  if(!ok) return``;
   let steps="",num=0;
   proto.forEach(s=>{
     if(s.type==="sep"){
@@ -163,7 +173,7 @@ function renderProto(m,titre,proto,ok){
       <div class="snum">${num}</div>
       <div class="sinfo">
         <div class="sname">
-          ${s.tool}
+          <span class="sname-text">${s.tool}</span>
           ${s.grain?`<span class="grain">${s.grain}</span>`:''}
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:3px">
