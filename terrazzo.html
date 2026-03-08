@@ -16,7 +16,6 @@ header p{font-size:.85rem;color:rgba(255,255,255,.5);margin-top:2px}
 label{display:block;font-size:.75rem;font-weight:700;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
 select{width:100%;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:8px;font-size:.9rem;color:#e8e8e8;background:rgba(0,0,0,.6);cursor:pointer;-webkit-appearance:none}
 select option{background:#0d1030}
-.sbtn{width:100%;padding:15px;background:linear-gradient(135deg,#c8a800,#e6c200);color:#0d1545;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;margin-bottom:18px;box-shadow:0 4px 20px rgba(200,168,0,.3)}
 .rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .rb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 16px;font-size:.85rem;color:rgba(255,255,255,.45);cursor:pointer}
 .cnt{font-size:.85rem;color:rgba(255,255,255,.28);margin-bottom:14px}
@@ -24,8 +23,7 @@ select option{background:#0d1030}
 .mc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(255,255,255,.08)}
 .r1::before{background:linear-gradient(180deg,#FFD700,#FFA500)}
 .r1{border-color:rgba(255,215,0,.2)}
-.mh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
-.mn{font-size:1.1rem;font-weight:700;color:#fff}
+.mn{font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:12px}
 .badge{background:linear-gradient(135deg,#c8a800,#e6c200);color:#0d1545;font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:7px;margin-left:8px;vertical-align:middle}
 .steps{display:flex;flex-direction:column;gap:7px}
 .step{display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,255,255,.04);border-radius:9px;border:1px solid rgba(255,255,255,.06)}
@@ -34,7 +32,6 @@ select option{background:#0d1030}
 .sname{font-size:.9rem;font-weight:600;color:#e8e8e8}
 .sdet{font-size:.76rem;color:rgba(255,255,255,.38);margin-top:2px}
 .stag{font-size:.72rem;padding:3px 9px;border-radius:5px;background:rgba(200,168,0,.1);color:#c8a800;border:1px solid rgba(200,168,0,.2);white-space:nowrap;font-weight:600}
-.dim{font-size:.72rem;color:rgba(255,255,255,.3);margin-left:6px;white-space:nowrap}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 .tag{padding:4px 11px;border-radius:6px;font-size:.76rem;font-weight:600}
 .te{background:rgba(33,150,243,.12);color:#64B5F6;border:1px solid rgba(33,150,243,.2)}
@@ -71,52 +68,51 @@ select option{background:#0d1030}
 </div>
 <script>
 const MACHINES={
-  "Scoot":          {diam:125,diamMachine:125, pla:0,pads:1,dia:0,hur:0,pucks:0,cer:0,seg:0,turbo:1,resine:1},
-  "Scoot Bouchardes":{diam:125,diamMachine:125,pla:0,pads:1,dia:0,hur:0,pucks:0,cer:0,seg:0,turbo:1,resine:1},
-  "Scoot Stand Up": {diam:125,diamMachine:125, pla:0,pads:1,dia:0,hur:0,pucks:0,cer:0,seg:0,turbo:1,resine:1},
-  "L14EU":          {diam:335,diamMachine:335, pla:1,pads:1,dia:1,hur:1,pucks:1,cer:1,seg:0,turbo:0,resine:0},
-  "SH270MLC":       {diam:270,diamMachine:270, pla:0,pads:0,dia:0,hur:0,pucks:0,cer:0,seg:1,turbo:0,resine:0},
-  "SH270M":         {diam:270,diamMachine:270, pla:0,pads:0,dia:0,hur:0,pucks:0,cer:0,seg:1,turbo:0,resine:0},
-  "BU270M":         {diam:270,diamMachine:270, pla:0,pads:0,dia:0,hur:0,pucks:0,cer:0,seg:1,turbo:0,resine:0},
-  "SH320T":         {diam:250,diamMachine:250, pla:0,pads:0,dia:0,hur:0,pucks:0,cer:0,seg:1,turbo:0,resine:0},
-  "TH500M":         {diam:250,diamMachine:500, pla:1,pads:1,dia:1,hur:1,pucks:1,cer:1,seg:1,turbo:0,resine:0},
-  "TH500T":         {diam:250,diamMachine:500, pla:1,pads:1,dia:1,hur:1,pucks:1,cer:1,seg:1,turbo:0,resine:0},
-  "L16EU":          {diam:180,diamMachine:430, pla:1,pads:1,dia:1,hur:1,pucks:1,cer:1,seg:1,turbo:0,resine:0},
-  "L20OES7":        {diam:230,diamMachine:500, pla:1,pads:1,dia:1,hur:1,pucks:1,cer:1,seg:1,turbo:0,resine:0},
-  "L25RES7":        {diam:230,diamMachine:650, pla:1,pads:1,dia:1,hur:1,pucks:1,cer:1,seg:1,turbo:0,resine:0},
-  "L31RES7":        {diam:335,diamMachine:800, pla:1,pads:1,dia:1,hur:1,pucks:1,cer:1,seg:1,turbo:0,resine:0},
-  "L38GREB":        {diam:335,diamMachine:1000,pla:1,pads:0,dia:0,hur:0,pucks:0,cer:0,seg:1,turbo:0,resine:0}
+  "Scoot":           {diam:125,diamMachine:125, pla:0,pads:1,hur:0,pucks:0,turbo:1,resine:1},
+  "Scoot Bouchardes":{diam:125,diamMachine:125, pla:0,pads:1,hur:0,pucks:0,turbo:1,resine:1},
+  "Scoot Stand Up":  {diam:125,diamMachine:125, pla:0,pads:1,hur:0,pucks:0,turbo:1,resine:1},
+  "L14EU":           {diam:335,diamMachine:335, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0},
+  "SH270MLC":        {diam:270,diamMachine:270, pla:0,pads:0,hur:0,pucks:0,turbo:0,resine:0},
+  "SH270M":          {diam:270,diamMachine:270, pla:0,pads:0,hur:0,pucks:0,turbo:0,resine:0},
+  "BU270M":          {diam:270,diamMachine:270, pla:0,pads:0,hur:0,pucks:0,turbo:0,resine:0},
+  "SH320T":          {diam:250,diamMachine:250, pla:0,pads:0,hur:0,pucks:0,turbo:0,resine:0},
+  "TH500M":          {diam:250,diamMachine:500, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0},
+  "TH500T":          {diam:250,diamMachine:500, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0},
+  "L16EU":           {diam:180,diamMachine:430, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0},
+  "L20OES7":         {diam:230,diamMachine:500, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0},
+  "L25RES7":         {diam:230,diamMachine:650, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0},
+  "L31RES7":         {diam:335,diamMachine:800, pla:1,pads:1,hur:1,pucks:1,turbo:0,resine:0},
+  "L38GREB":         {diam:335,diamMachine:1000,pla:1,pads:0,hur:0,pucks:0,turbo:0,resine:0}
 };
 
-// Ø335 = uniquement les consommables qui sont physiquement à 335mm (Pads souples Métal et Hurricane)
-// Les Plaquettes liant métal et Pucks résine n'ont pas de diamètre fixe
+// Aucun diam dans les étapes — uniquement grain et note
 const PROTOCOLE_GRANITO=[
   {tool:"Plaquettes liant métal",grain:"#25",note:"Bien aspirer entre les grains"},
   {tool:"Plaquettes liant métal",grain:"#40",note:"Bien aspirer entre les grains"},
   {tool:"Plaquettes liant métal",grain:"#80",note:"Bien aspirer entre les grains"},
-  {tool:"Pads souples Métal",grain:"#100/120",diam:335,note:"Bien aspirer entre les grains"},
+  {tool:"Pads souples Métal",grain:"#100/120",note:"Bien aspirer entre les grains"},
   {type:"sep",tool:"GROUTING"},
-  {tool:"Pads souples Métal",grain:"#100/120",diam:335,note:"Bien aspirer, nettoyer à l'eau"},
+  {tool:"Pads souples Métal",grain:"#100/120",note:"Bien aspirer, nettoyer à l'eau"},
   {tool:"Pucks résine Blanche",grain:"#200",eau:true,note:"Bien laver entre les grains"},
   {tool:"Pucks résine Blanche",grain:"#400",note:"Bien aspirer entre les grains"},
   {tool:"Pucks résine Blanche",grain:"#800",note:"Bien aspirer entre les grains"},
   {type:"sep",tool:"SEALER"},
-  {tool:"Hurricane",grain:"#800",diam:335,note:"Éventuellement lustreuse"},
-  {tool:"Hurricane",grain:"#1500",diam:335,note:"Éventuellement lustreuse"}
+  {tool:"Hurricane",grain:"#800",note:"Éventuellement lustreuse"},
+  {tool:"Hurricane",grain:"#1500",note:"Éventuellement lustreuse"}
 ];
 
 const PROTOCOLE_BORDURAGE=[
-  {tool:"Plateau Turbo M14",grain:"#Moyen",diam:335,note:"Bien aspirer entre les grains"},
-  {tool:"Plateau Turbo M14",grain:"#Fin",diam:335,note:"Bien aspirer entre les grains"},
-  {tool:"Pads souples Métal",grain:"#100/120",diam:335,note:"Bien aspirer, nettoyer à l'eau"},
+  {tool:"Plateau Turbo M14",grain:"#Moyen",note:"Bien aspirer entre les grains"},
+  {tool:"Plateau Turbo M14",grain:"#Fin",note:"Bien aspirer entre les grains"},
+  {tool:"Pads souples Métal",grain:"#100/120",note:"Bien aspirer, nettoyer à l'eau"},
   {type:"sep",tool:"GROUTING"},
-  {tool:"Pads souples Métal",grain:"#100/120",diam:335,note:"Bien aspirer entre les grains"},
-  {tool:"Pads Résine Souples",grain:"#200",eau:true,diam:335,note:"Bien laver entre les grains"},
-  {tool:"Pads Résine Souples",grain:"#400",diam:335,note:"Bien aspirer entre les grains"},
-  {tool:"Pads Résine Souples",grain:"#800",diam:335,note:"Bien aspirer entre les grains"},
+  {tool:"Pads souples Métal",grain:"#100/120",note:"Bien aspirer entre les grains"},
+  {tool:"Pads Résine Souples",grain:"#200",eau:true,note:"Bien laver entre les grains"},
+  {tool:"Pads Résine Souples",grain:"#400",note:"Bien aspirer entre les grains"},
+  {tool:"Pads Résine Souples",grain:"#800",note:"Bien aspirer entre les grains"},
   {type:"sep",tool:"SEALER"},
-  {tool:"Hurricane",grain:"#800",diam:335,note:"Éventuellement lustreuse"},
-  {tool:"Hurricane",grain:"#1500",diam:335,note:"Éventuellement lustreuse"}
+  {tool:"Hurricane",grain:"#800",note:"Éventuellement lustreuse"},
+  {tool:"Hurricane",grain:"#1500",note:"Éventuellement lustreuse"}
 ];
 
 const TOOL_KEY={
@@ -139,14 +135,14 @@ function go(){
   const canG=m.pla||m.pads||m.pucks||m.hur;
   const canB=m.turbo||m.resine||m.pads||m.hur;
   let html=`<div class="tags"><span class="tag te">Ø outil : ${m.diam} mm</span><span class="tag ts">Ø machine : ${m.diamMachine} mm</span></div>`;
-  if(showG) html+=renderProto(mNom,m,"Ponçage Granito",PROTOCOLE_GRANITO,canG);
-  if(showB) html+=renderProto(mNom,m,"Bordurage",PROTOCOLE_BORDURAGE,canB);
+  if(showG) html+=renderProto(m,"Ponçage Granito",PROTOCOLE_GRANITO,canG);
+  if(showB) html+=renderProto(m,"Bordurage",PROTOCOLE_BORDURAGE,canB);
   document.getElementById("rc").textContent=mNom+" — Protocole AD LUCEM";
   document.getElementById("rl").innerHTML=html;
 }
 
-function renderProto(mNom,m,titre,proto,ok){
-  if(!ok) return`<div class="mc" style="opacity:.45"><div class="mh"><div class="mn">${titre} <span style="font-size:.75rem;color:rgba(255,255,255,.3);font-weight:400">non compatible avec cette machine</span></div></div></div>`;
+function renderProto(m,titre,proto,ok){
+  if(!ok) return`<div class="mc" style="opacity:.4"><div class="mn">${titre} <span style="font-size:.8rem;color:rgba(255,255,255,.3);font-weight:400">— non compatible</span></div></div>`;
   let steps="",num=0;
   proto.forEach(s=>{
     if(s.type==="sep"){
@@ -156,8 +152,6 @@ function renderProto(mNom,m,titre,proto,ok){
     const key=TOOL_KEY[s.tool];
     const compat=!key||m[key];
     num++;
-    // N'afficher le diamètre QUE si l'outil a un diamètre ET que la machine en a un compatible
-    const showDiam = s.diam && compat;
     steps+=`<div class="step" style="${compat?'':'opacity:.3;filter:grayscale(1)'}">
       <div class="snum">${num}</div>
       <div class="sinfo">
@@ -165,10 +159,9 @@ function renderProto(mNom,m,titre,proto,ok){
         ${s.note?`<div class="sdet">${s.note}</div>`:''}
       </div>
       ${s.grain?`<span class="stag">${s.grain}${s.eau?' 💧':''}</span>`:''}
-      ${showDiam?`<span class="dim">Ø${s.diam}</span>`:''}
     </div>`;
   });
-  return`<div class="mc r1" style="margin-bottom:16px"><div class="mh"><div class="mn">${titre}<span class="badge">AD LUCEM</span></div></div><div class="steps">${steps}</div></div>`;
+  return`<div class="mc r1" style="margin-bottom:16px"><div class="mn">${titre}<span class="badge">AD LUCEM</span></div><div class="steps">${steps}</div></div>`;
 }
 
 function raz(){
