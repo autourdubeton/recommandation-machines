@@ -26,12 +26,16 @@ select option{background:#0d1030}
 .mn{font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:12px}
 .badge{background:linear-gradient(135deg,#c8a800,#e6c200);color:#0d1545;font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:7px;margin-left:8px;vertical-align:middle}
 .steps{display:flex;flex-direction:column;gap:7px}
-.step{display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,255,255,.04);border-radius:9px;border:1px solid rgba(255,255,255,.06)}
+.step{display:flex;align-items:center;gap:12px;padding:11px 14px;background:rgba(255,255,255,.04);border-radius:9px;border:1px solid rgba(255,255,255,.06)}
 .snum{width:26px;height:26px;border-radius:50%;background:rgba(200,168,0,.15);border:1px solid rgba(200,168,0,.3);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#c8a800;flex-shrink:0}
 .sinfo{flex:1}
-.sname{font-size:.9rem;font-weight:600;color:#e8e8e8}
-.sdet{font-size:.76rem;color:rgba(255,255,255,.38);margin-top:2px}
-.stag{font-size:.72rem;padding:3px 9px;border-radius:5px;background:rgba(200,168,0,.1);color:#c8a800;border:1px solid rgba(200,168,0,.2);white-space:nowrap;font-weight:600}
+/* Nom + grain sur la même ligne */
+.sname{font-size:.95rem;font-weight:600;color:#e8e8e8;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.grain{font-size:.95rem;font-weight:800;color:#c8a800}
+/* Note en dessous */
+.sdet{font-size:.76rem;color:rgba(255,255,255,.38);margin-top:3px}
+/* Badge eau — bien visible en bleu */
+.eau-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(30,136,229,.25);border:1px solid rgba(30,136,229,.5);color:#64B5F6;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:5px;margin-top:4px}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 .tag{padding:4px 11px;border-radius:6px;font-size:.76rem;font-weight:600}
 .te{background:rgba(33,150,243,.12);color:#64B5F6;border:1px solid rgba(33,150,243,.2)}
@@ -85,7 +89,6 @@ const MACHINES={
   "L38GREB":         {diam:335,diamMachine:1000,pla:1,pads:0,hur:0,pucks:0,turbo:0,resine:0}
 };
 
-// Aucun diam dans les étapes — uniquement grain et note
 const PROTOCOLE_GRANITO=[
   {tool:"Plaquettes liant métal",grain:"#25",note:"Bien aspirer entre les grains"},
   {tool:"Plaquettes liant métal",grain:"#40",note:"Bien aspirer entre les grains"},
@@ -146,7 +149,11 @@ function renderProto(m,titre,proto,ok){
   let steps="",num=0;
   proto.forEach(s=>{
     if(s.type==="sep"){
-      steps+=`<div style="display:flex;align-items:center;gap:10px;margin:6px 0"><div style="flex:1;height:1px;background:rgba(200,168,0,.2)"></div><span style="font-size:.72rem;font-weight:700;color:#c8a800;letter-spacing:.8px">${s.tool}</span><div style="flex:1;height:1px;background:rgba(200,168,0,.2)"></div></div>`;
+      steps+=`<div style="display:flex;align-items:center;gap:10px;margin:6px 0">
+        <div style="flex:1;height:1px;background:rgba(200,168,0,.2)"></div>
+        <span style="font-size:.72rem;font-weight:700;color:#c8a800;letter-spacing:.8px">${s.tool}</span>
+        <div style="flex:1;height:1px;background:rgba(200,168,0,.2)"></div>
+      </div>`;
       return;
     }
     const key=TOOL_KEY[s.tool];
@@ -155,10 +162,15 @@ function renderProto(m,titre,proto,ok){
     steps+=`<div class="step" style="${compat?'':'opacity:.3;filter:grayscale(1)'}">
       <div class="snum">${num}</div>
       <div class="sinfo">
-        <div class="sname">${s.tool}</div>
-        ${s.note?`<div class="sdet">${s.note}</div>`:''}
+        <div class="sname">
+          ${s.tool}
+          ${s.grain?`<span class="grain">${s.grain}</span>`:''}
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:3px">
+          ${s.note?`<span class="sdet">${s.note}</span>`:''}
+          ${s.eau?`<span class="eau-badge">💧 utiliser de l'eau</span>`:''}
+        </div>
       </div>
-      ${s.grain?`<span class="stag">${s.grain}${s.eau?' 💧':''}</span>`:''}
     </div>`;
   });
   return`<div class="mc r1" style="margin-bottom:16px"><div class="mn">${titre}<span class="badge">AD LUCEM</span></div><div class="steps">${steps}</div></div>`;
