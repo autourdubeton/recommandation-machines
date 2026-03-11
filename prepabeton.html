@@ -568,14 +568,27 @@ function showRecos(targetScore) {
     const level = getLevel(c.score);
     const pct   = Math.round((c.score / SCORE_MAX) * 100);
     const isTop = i === 0;
+    const outilPhoto = OUTILS_PHOTOS[c.outil];
     return `
       <div class="machine-card ${isTop ? 'top' : ''}">
-        <div class="machine-photo">
-          ${c.machine.photo
-            ? `<img src="${c.machine.photo}" alt="${c.machine.nom}">`
-            : `<div class="machine-photo-placeholder"><span>📷</span><span>${c.machine.nom}</span></div>`
-          }
-          ${isTop ? '<span class="top-badge">⭐ Recommandé</span>' : ''}
+        <!-- Photos côte à côte -->
+        <div style="display:flex;gap:8px;margin-bottom:10px;position:relative;">
+          <!-- Photo machine -->
+          <div style="flex:1;aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;">
+            ${c.machine.photo
+              ? `<img src="${c.machine.photo}" alt="${c.machine.nom}" style="width:100%;height:100%;object-fit:contain;">`
+              : `<div style="opacity:0.3;font-size:1.5rem;">📷</div>`
+            }
+            ${isTop ? '<span class="top-badge">⭐ Recommandé</span>' : ''}
+          </div>
+          <!-- Photo outil -->
+          <div style="flex:1;aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;">
+            ${outilPhoto
+              ? `<img src="${outilPhoto}" alt="${c.outil}" style="width:100%;height:85%;object-fit:contain;">`
+              : `<div style="opacity:0.3;font-size:1.5rem;">🔧</div>`
+            }
+            <div style="font-size:9px;color:rgba(255,255,255,0.4);text-align:center;padding:0 4px;line-height:1.2;">${c.outil}</div>
+          </div>
         </div>
         <div class="machine-body">
           <div class="machine-name">${c.machine.nom}</div>
