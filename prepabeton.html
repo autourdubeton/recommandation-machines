@@ -348,15 +348,15 @@
     <div class="card">
       <div class="selectors">
         <div class="selector-group">
-          <label>Machine</label>
-          <select id="sel-machine" onchange="onMachineChange()">
-            <option value="">— Choisir une machine —</option>
+          <label>Outil</label>
+          <select id="sel-outil" onchange="onOutilChange()">
+            <option value="">— Choisir un outil —</option>
           </select>
         </div>
         <div class="selector-group">
-          <label>Outil</label>
-          <select id="sel-outil" onchange="onOutilChange()" disabled>
-            <option value="">— Choisir un outil —</option>
+          <label>Machine</label>
+          <select id="sel-machine" onchange="onMachineChange()">
+            <option value="">— Choisir une machine —</option>
           </select>
         </div>
       </div>
@@ -889,20 +889,47 @@ function showRecos(targetScore) {
 const selMachine = document.getElementById('sel-machine');
 const selOutil   = document.getElementById('sel-outil');
 
+// Peupler sel-machine avec toutes les machines
 MACHINES.forEach(m => {
   const opt = document.createElement('option');
   opt.value = m.nom; opt.textContent = m.nom;
   selMachine.appendChild(opt);
 });
 
+// Peupler sel-outil avec tous les outils (groupés)
+const grpDiamant = document.createElement('optgroup');
+grpDiamant.label = '— Outils diamant';
+OUTILS.slice(0, OUTILS_DIAMANT_MAX + 1).forEach(o => {
+  const opt = document.createElement('option');
+  opt.value = o; opt.textContent = o;
+  grpDiamant.appendChild(opt);
+});
+selOutil.appendChild(grpDiamant);
+
+const grpPlateaux = document.createElement('optgroup');
+grpPlateaux.label = '— Plateaux Bouchardes à Main';
+OUTILS.slice(14, 19).forEach(o => {
+  const opt = document.createElement('option');
+  opt.value = o; opt.textContent = o;
+  grpPlateaux.appendChild(opt);
+});
+selOutil.appendChild(grpPlateaux);
+
+const grpRouleaux = document.createElement('optgroup');
+grpRouleaux.label = '— Rouleaux bouchardes';
+OUTILS.slice(19, 27).forEach(o => {
+  const opt = document.createElement('option');
+  opt.value = o; opt.textContent = o;
+  grpRouleaux.appendChild(opt);
+});
+selOutil.appendChild(grpRouleaux);
+
 function onMachineChange() {
   const nom = selMachine.value;
-  selOutil.innerHTML = '<option value="">— Choisir un outil —</option>';
-  selOutil.disabled = !nom;
   document.getElementById('meta-row').innerHTML = '';
   hideScore();
 
-  if (!nom) { showEmpty(); return; }
+  if (!nom) { showEmpty('Sélectionnez une machine compatible'); return; }
 
   const machine = MACHINES.find(m => m.nom === nom);
 
@@ -1077,25 +1104,81 @@ function onMachineChange() {
     return;
   }
 
-  showEmpty('Sélectionnez un outil');
+  // Filtrer les outils compatibles avec cette machine
+  repopulateOutils(nom);
+
+  // Si un outil est déjà sélectionné et compatible → calculer le score
+  const nomO = selOutil.value;
+  if (nomO && selOutil.querySelector(`option[value="${nomO}"]`)) {
+    computeAndShow(nom, nomO);
+  } else {
+    showEmpty('Sélectionnez un outil');
+  }
 }
 
-function onOutilChange() {
-  const nomM = selMachine.value;
-  const nomO = selOutil.value;
-  if (!nomM || !nomO) { hideScore(); showEmpty('Sélectionnez un outil'); return; }
-  
-  // Afficher photo outil
+// ── Helpers bidirectionnels ──────────────────────────────
+
+function repopulateMachines(nomO) {
+  const current = selMachine.value;
+  selMachine.innerHTML = '<option value="">— Choisir une machine —</option>';
+  MACHINES.forEach(m => {
+    if (nomO) {
+      const oi = OUTILS.indexOf(nomO);
+      const s = m.scores[oi];
+      if (s === null || s === undefined) return;
+    }
+    const opt = document.createElement('option');
+    opt.value = m.nom; opt.textContent = m.nom;
+    selMachine.appendChild(opt);
+  });
+  // Restaurer la sélection si toujours compatible
+  if (current && selMachine.querySelector(`option[value="${current}"]`)) {
+    selMachine.value = current;
+  }
+}
+
+function repopulateOutils(nomM) {
+  const current = selOutil.value;
+  const machine = MACHINES.find(m => m.nom === nomM);
+  selOutil.innerHTML = '<option value="">— Choisir un outil —</option>';
+  if (!machine) return;
+
+  const groups = [
+    { label: '— Outils diamant', start: 0, end: OUTILS_DIAMANT_MAX + 1 },
+    { label: '— Plateaux Bouchardes à Main', start: 14, end: 19 },
+    { label: '— Rouleaux bouchardes', start: 19, end: 27 },
+  ];
+  groups.forEach(g => {
+    const outils = OUTILS.slice(g.start, g.end).filter((o, i) => {
+      const s = machine.scores[g.start + i];
+      return s !== null && s !== undefined;
+    });
+    if (!outils.length) return;
+    const grp = document.createElement('optgroup');
+    grp.label = g.label;
+    outils.forEach(o => {
+      const opt = document.createElement('option');
+      opt.value = o; opt.textContent = o;
+      grp.appendChild(opt);
+    });
+    selOutil.appendChild(grp);
+  });
+
+  if (current && selOutil.querySelector(`option[value="${current}"]`)) {
+    selOutil.value = current;
+  }
+}
+
+function showOutilPhoto(nomO, score) {
   const outilPhoto = OUTILS_PHOTOS[nomO];
-  const outilWrap = document.getElementById('outil-photo-wrap');
-  const outilImg  = document.getElementById('outil-photo-img');
+  const outilBox  = document.getElementById('outil-photo-box');
   const outilName = document.getElementById('outil-photo-name');
-  const outilBox = document.getElementById('outil-photo-box');
+  const bouchDiv  = document.getElementById('outil-bouch-level');
   if (outilBox) {
+    const smallOutils = ['Rouleau 28P','Rouleau 32P','Rouleau 42E','Rouleau 80E','Rouleau 300E'];
+    const mediumOutils = ['Plateau Beads 125mm'];
+    const bgSize = smallOutils.includes(nomO) ? '300%' : mediumOutils.includes(nomO) ? '80%' : '90%';
     if (outilPhoto) {
-      const smallOutils = ['Rouleau 28P','Rouleau 32P','Rouleau 42E','Rouleau 80E','Rouleau 300E'];
-      const mediumOutils = ['Plateau Beads 125mm'];
-      const bgSize = smallOutils.includes(nomO) ? '300%' : mediumOutils.includes(nomO) ? '80%' : '90%';
       outilBox.style.cssText = 'width:180px;height:140px;border-radius:12px;background-image:url("' + outilPhoto + '");background-size:' + bgSize + ';background-repeat:no-repeat;background-position:center;background-color:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);';
       outilBox.innerHTML = '';
     } else {
@@ -1103,22 +1186,9 @@ function onOutilChange() {
       outilBox.innerHTML = '<div class="machine-photo-placeholder"><span>📷</span><span>Photo à venir</span></div>';
     }
   }
-  const outilCard = document.getElementById('outil-photo-card');
-  if (outilCard) outilCard.style.display = 'block';
   if (outilName) outilName.textContent = nomO;
-
-  // Afficher aussi l'aspirateur
-  const aspCard2 = document.getElementById('aspirateur-card');
-  if (aspCard2) aspCard2.style.display = 'block';
-
-  const machine  = MACHINES.find(m => m.nom === nomM);
-  const outilIdx = OUTILS.indexOf(nomO);
-  const score    = machine.scores[outilIdx];
-
-  // Afficher le niveau bouchardage sous la photo si applicable
-  const bouchDiv = document.getElementById('outil-bouch-level');
   if (bouchDiv) {
-    if (typeof score === 'string' && BOUCHARD_LABELS[score]) {
+    if (score && typeof score === 'string' && BOUCHARD_LABELS[score]) {
       const bl = BOUCHARD_LABELS[score];
       bouchDiv.style.display = 'inline-block';
       bouchDiv.innerHTML = `<span style="padding:4px 12px;background:rgba(255,255,255,0.07);border:1px solid ${bl.color};border-radius:20px;font-size:12px;font-weight:700;color:${bl.color};">${bl.icon} Bouchardage ${bl.label}</span>`;
@@ -1127,24 +1197,63 @@ function onOutilChange() {
       bouchDiv.innerHTML = '';
     }
   }
+}
 
+function computeAndShow(nomM, nomO) {
+  const machine = MACHINES.find(m => m.nom === nomM);
+  const outilIdx = OUTILS.indexOf(nomO);
+  const score = machine.scores[outilIdx];
+
+  showOutilPhoto(nomO, score);
+  document.getElementById('outil-photo-card').style.display = 'block';
+  document.getElementById('aspirateur-card').style.display = 'block';
   document.getElementById('incompatible').classList.remove('visible');
   document.getElementById('empty-state').style.display = 'none';
 
-  if (score === null) {
+  if (score === null || score === undefined) {
     document.getElementById('incompatible').classList.add('visible');
     hideScore();
     return;
   }
-
-  // Score texte = bouchardage
   if (typeof score === 'string') {
     showScoreBouchardage(score);
     return;
   }
-
   showScore(score);
 }
+
+
+function onOutilChange() {
+  const nomO = selOutil.value;
+  const nomM = selMachine.value;
+
+  if (!nomO) {
+    // Réinitialiser machine à la liste complète
+    repopulateMachines(null);
+    hideScore();
+    showEmpty('Sélectionnez un outil');
+    document.getElementById('outil-photo-card').style.display = 'none';
+    return;
+  }
+
+  // Filtrer les machines compatibles avec cet outil
+  repopulateMachines(nomO);
+
+  // Afficher photo outil immédiatement
+  showOutilPhoto(nomO, null);
+  document.getElementById('outil-photo-card').style.display = 'block';
+
+  // Si pas de machine choisie → attendre
+  if (!nomM || !selMachine.querySelector(`option[value="${nomM}"]`)) {
+    hideScore();
+    showEmpty('Sélectionnez une machine compatible');
+    return;
+  }
+
+  // Les deux sont choisis → calculer score
+  computeAndShow(nomM, nomO);
+}
+
 
 function showScoreBouchardage(level) {
   const bl = BOUCHARD_LABELS[level] || { label:level, score:10, color:'#c8a800', icon:'🔵' };
