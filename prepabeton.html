@@ -1110,7 +1110,32 @@ function repopulateOutils(nomM) {
   const current = selOutil.value;
   const machine = MACHINES.find(m => m.nom === nomM);
   selOutil.innerHTML = '<option value="">— Choisir un outil —</option>';
-  if (!machine) return;
+  if (!machine) {
+    // Remettre tous les outils groupés
+    const allGroups = [
+      { label: '— Outils diamant', start: 0, end: OUTILS_DIAMANT_MAX + 1 },
+      { label: '— Plateaux Bouchardes à Main', start: 14, end: 19 },
+      { label: '— Rouleaux bouchardes', start: 19, end: 27 },
+    ];
+    allGroups.forEach(g => {
+      const grp = document.createElement('optgroup');
+      grp.label = g.label;
+      OUTILS.slice(g.start, g.end).forEach(o => {
+        const opt = document.createElement('option');
+        opt.value = o; opt.textContent = o;
+        grp.appendChild(opt);
+      });
+      selOutil.appendChild(grp);
+    });
+    // Remettre toutes les machines aussi
+    selMachine.innerHTML = '<option value="">— Choisir une machine —</option>';
+    MACHINES.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.nom; opt.textContent = m.nom;
+      selMachine.appendChild(opt);
+    });
+    return;
+  }
 
   const groups = [
     { label: '— Outils diamant', start: 0, end: OUTILS_DIAMANT_MAX + 1 },
