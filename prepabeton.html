@@ -1093,7 +1093,7 @@ function onOutilChange() {
   if (outilBox) {
     if (outilPhoto) {
       const smallOutils = ['Rouleau 28P','Rouleau 32P','Rouleau 42E','Rouleau 80E','Rouleau 300E'];
-      const bgSize = smallOutils.includes(nomO) ? '200%' : '90%';
+      const bgSize = smallOutils.includes(nomO) ? '250%' : '90%';
       outilBox.style.cssText = 'width:180px;height:140px;border-radius:12px;background-image:url("' + outilPhoto + '");background-size:' + bgSize + ';background-repeat:no-repeat;background-position:center;background-color:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);';
       outilBox.innerHTML = '';
     } else {
