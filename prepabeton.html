@@ -932,6 +932,7 @@ function onMachineChange() {
   document.getElementById('bmp-preps-card').style.display = 'none';
 
   if (!nom) {
+    selOutil.disabled = false;
     repopulateOutils(null);
     document.getElementById('aspirateur-card').style.display = 'none';
     document.getElementById('machine-photo-card').style.display = 'none';
