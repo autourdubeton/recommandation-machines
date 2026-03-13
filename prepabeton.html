@@ -1185,7 +1185,7 @@ function showScore(score) {
   gf.style.background = `linear-gradient(90deg,#4fc3f7,${level.color})`;
 
   // Préparations compatibles
-  const matching = PREPS.filter(p => Math.abs(p.score - score) <= TOLERANCE)
+  const matching = PREPS.filter(p => p.score !== null && !p.isBMP && !p.isBOUCH && Math.abs(p.score - score) <= TOLERANCE)
     .sort((a,b) => Math.abs(a.score-score) - Math.abs(b.score-score));
 
   document.getElementById('prep-tags').innerHTML = matching.length
