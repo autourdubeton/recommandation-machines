@@ -666,7 +666,7 @@ function showBMPreco(prep) {
           </div>
         </div>
         <div class="machine-body">
-          <div class="machine-name">${machine.nom}</div>
+          <div class="machine-name">${machine.nom} <span style="font-size:11px;font-weight:500;color:rgba(255,255,255,0.4);margin-left:4px;">⚡ ${machine.tension}</span></div>
           <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">⚡ ${machine.tension} &nbsp;|&nbsp; ↔ ${machine.largeur}mm &nbsp;|&nbsp; ⚖ ${machine.poids}</div>
           <div style="padding:5px 10px;background:rgba(255,138,101,0.1);border:1px solid rgba(255,138,101,0.3);border-radius:8px;font-size:11px;color:#ff8a65;font-weight:600;margin-bottom:6px;">🔨 ${machine.outil_bmp}</div>
           ${asp ? `<div style="font-size:10px;font-weight:700;color:#c8a800;">🌀 ${asp.ref}</div>` : ''}
@@ -822,7 +822,7 @@ function showRecos(targetScore) {
             </div>
           </div>
           <div class="machine-body">
-            <div class="machine-name">${c.machine.nom}</div>
+            <div class="machine-name">${c.machine.nom} <span style="font-size:11px;font-weight:500;color:rgba(255,255,255,0.4);margin-left:4px;">⚡ ${c.machine.tension}</span></div>
             <div class="machine-outil">🔧 ${c.outil}</div>
             ${(() => { const a = ASPIRATEURS[c.machine.nom]; return a ? `<div style="font-size:10px;font-weight:700;color:#c8a800;margin:3px 0 6px;letter-spacing:0.5px;">🌀 ${a.ref}</div>` : ''; })()}
             <div class="machine-score-row">
@@ -865,7 +865,7 @@ function showRecos(targetScore) {
           </div>
         </div>
         <div class="machine-body">
-          <div class="machine-name">${c.machine.nom}</div>
+          <div class="machine-name">${c.machine.nom} <span style="font-size:11px;font-weight:500;color:rgba(255,255,255,0.4);margin-left:4px;">⚡ ${c.machine.tension}</span></div>
           <div class="machine-outil">🔧 ${c.outil}</div>
           ${(() => { const a = ASPIRATEURS[c.machine.nom]; return a ? `<div style="font-size:10px;font-weight:700;color:#c8a800;margin:3px 0 6px;letter-spacing:0.5px;">🌀 ${a.ref}</div>` : ''; })()}
           <div class="machine-score-row">
