@@ -928,116 +928,70 @@ function onMachineChange() {
   const nom = selMachine.value;
   document.getElementById('meta-row').innerHTML = '';
   hideScore();
+  document.getElementById('outil-photo-card').style.display = 'none';
+  document.getElementById('bmp-preps-card').style.display = 'none';
 
   if (!nom) {
-    // Remettre tous les outils
     repopulateOutils(null);
-    showEmpty('Sélectionnez une machine compatible');
+    document.getElementById('aspirateur-card').style.display = 'none';
+    showEmpty('Sélectionnez une machine');
     return;
   }
 
   const machine = MACHINES.find(m => m.nom === nom);
 
-  // Vider et re-peupler le select outil avec les outils compatibles
+  // ── Vider et re-peupler le select outil ──
   const savedOutil = selOutil.value;
+  selOutil.disabled = false;
   selOutil.innerHTML = '<option value="">— Choisir un outil —</option>';
 
-  // Groupe 1 : outils diamant (0-13)
-  const diamantOutils = OUTILS.slice(0, OUTILS_DIAMANT_MAX + 1);
-  const hasDiamant = diamantOutils.some((o, i) => machine.scores[i] !== null);
-  if (hasDiamant) {
-    const grp = document.createElement('optgroup');
-    grp.label = '— Outils diamant';
-    diamantOutils.forEach((o, i) => {
-      if (machine.scores[i] !== null) {
+  if (!machine.isASPI && !machine.isBMP) {
+    const groups = [
+      { label: '— Outils diamant', start: 0, end: OUTILS_DIAMANT_MAX + 1 },
+      { label: '— Plateaux Bouchardes à Main', start: 14, end: 19 },
+      { label: '— Rouleaux bouchardes', start: 19, end: 27 },
+    ];
+    groups.forEach(g => {
+      const compatibles = OUTILS.slice(g.start, g.end).filter((o, i) => {
+        const s = machine.scores[g.start + i];
+        return s !== null && s !== undefined;
+      });
+      if (!compatibles.length) return;
+      const grp = document.createElement('optgroup');
+      grp.label = g.label;
+      compatibles.forEach(o => {
         const opt = document.createElement('option');
         opt.value = o; opt.textContent = o;
         grp.appendChild(opt);
-      }
+      });
+      selOutil.appendChild(grp);
     });
-    selOutil.appendChild(grp);
   }
 
-  // Groupe 2 : plateaux manuels (14-18)
-  const plateauxOutils = OUTILS.slice(14, 19);
-  const hasPlateaux = plateauxOutils.some((o, i) => machine.scores[14 + i] !== null);
-  if (hasPlateaux) {
-    const grp = document.createElement('optgroup');
-    grp.label = '— Plateaux Bouchardes à Main';
-    plateauxOutils.forEach((o, i) => {
-      if (machine.scores[14 + i] !== null) {
-        const opt = document.createElement('option');
-        opt.value = o; opt.textContent = o;
-        grp.appendChild(opt);
-      }
-    });
-    selOutil.appendChild(grp);
-  }
-
-  // Groupe 3 : rouleaux bouchardes (19-26)
-  const rouleauxOutils = OUTILS.slice(19, 27);
-  const hasRouleaux = rouleauxOutils.some((o, i) => machine.scores[19 + i] !== null);
-  if (hasRouleaux) {
-    const grp = document.createElement('optgroup');
-    grp.label = '— Rouleaux bouchardes';
-    rouleauxOutils.forEach((o, i) => {
-      if (machine.scores[19 + i] !== null) {
-        const opt = document.createElement('option');
-        opt.value = o; opt.textContent = o;
-        grp.appendChild(opt);
-      }
-    });
-    selOutil.appendChild(grp);
-  }
-
+  // ── Meta badges ──
   if (machine.isASPI) {
     document.getElementById('meta-row').innerHTML = `
       <span class="meta-badge tension">⚡ ${machine.tension}</span>
       <span class="meta-badge tension">💨 ${machine.debit}</span>
-      <span class="meta-badge tension">⚖ ${machine.poids}</span>
-    `;
+      <span class="meta-badge tension">⚖ ${machine.poids}</span>`;
     selOutil.disabled = true;
     selOutil.innerHTML = '<option value="">— Aspirateur industriel —</option>';
-    // Photo
-    const photoCard = document.getElementById('machine-photo-card');
-    photoCard.style.display = 'block';
-    const photoEl = document.getElementById('machine-photo-single');
-    if (machine.photo) {
-      photoEl.style.cssText = 'width:180px;height:140px;border-radius:12px;flex-shrink:0;background-image:url("' + machine.photo + '");background-size:contain;background-repeat:no-repeat;background-position:center;background-color:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);';
-      photoEl.innerHTML = '';
-    }
-    document.getElementById('machine-info-single').innerHTML = `
-      <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:6px">${machine.nom}</div>
-      <div style="font-size:13px;color:var(--text-muted)">⚡ ${machine.tension} &nbsp;|&nbsp; 💨 ${machine.debit} &nbsp;|&nbsp; ⚖ ${machine.poids}</div>
-      <div style="margin-top:10px;padding:8px 12px;background:rgba(200,168,0,0.08);border:1px solid rgba(200,168,0,0.2);border-radius:8px;font-size:12px;color:var(--or);font-weight:600;">
-        🌀 Aspirateur industriel — compatible toutes machines ATDB
-      </div>
-    `;
-    document.getElementById('aspirateur-card').style.display = 'none';
-    document.getElementById('outil-photo-card').style.display = 'none';
-    document.getElementById('bmp-preps-card').style.display = 'none';
-    hideScore();
-    return;
-  }
-
-  if (machine.isBMP) {
+  } else if (machine.isBMP) {
     document.getElementById('meta-row').innerHTML = `
       <span class="meta-badge tension">⚡ ${machine.tension}</span>
       <span class="meta-badge tension">↔ Largeur ${machine.largeur} mm</span>
       <span class="meta-badge tension">⬇ Profondeur ${machine.profondeur}</span>
-      <span class="meta-badge tension">⚖ ${machine.poids}</span>
-    `;
+      <span class="meta-badge tension">⚖ ${machine.poids}</span>`;
     selOutil.disabled = true;
     selOutil.innerHTML = '<option value="">— Rabot béton (molettes carbure) —</option>';
   } else {
     document.getElementById('meta-row').innerHTML = `
       <span class="meta-badge tension">⚡ ${machine.tension}</span>
       <span class="meta-badge tension">Ø outil ${machine.diam} mm</span>
-      <span class="meta-badge tension">Ø machine ${machine.diamM} mm</span>
-    `;
+      <span class="meta-badge tension">Ø machine ${machine.diamM} mm</span>`;
   }
 
-  // Photo card
+  // ── Photo + infos machine ──
   const photoCard = document.getElementById('machine-photo-card');
   photoCard.style.display = 'block';
   const photoEl = document.getElementById('machine-photo-single');
@@ -1049,82 +1003,85 @@ function onMachineChange() {
     photoEl.innerHTML = '<div class="machine-photo-placeholder"><span>📷</span><span>Photo à venir</span></div>';
   }
 
-  // Infos machine
+  if (machine.isASPI) {
+    document.getElementById('machine-info-single').innerHTML = `
+      <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:6px">${machine.nom}</div>
+      <div style="font-size:13px;color:var(--text-muted)">⚡ ${machine.tension} &nbsp;|&nbsp; 💨 ${machine.debit} &nbsp;|&nbsp; ⚖ ${machine.poids}</div>
+      <div style="margin-top:10px;padding:8px 12px;background:rgba(200,168,0,0.08);border:1px solid rgba(200,168,0,0.2);border-radius:8px;font-size:12px;color:var(--or);font-weight:600;">
+        🌀 Aspirateur industriel — compatible toutes machines ATDB
+      </div>`;
+    document.getElementById('aspirateur-card').style.display = 'none';
+    hideScore();
+    return;
+  }
+
   if (machine.isBMP) {
     document.getElementById('machine-info-single').innerHTML = `
       <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:6px">${machine.nom}</div>
       <div style="font-size:13px;color:var(--text-muted)">⚡ ${machine.tension} &nbsp;|&nbsp; Largeur ${machine.largeur} mm &nbsp;|&nbsp; Profondeur retrait ${machine.profondeur} &nbsp;|&nbsp; ${machine.poids}</div>
       <div style="margin-top:10px;padding:8px 12px;background:rgba(255,138,101,0.1);border:1px solid rgba(255,138,101,0.3);border-radius:8px;font-size:12px;color:#ff8a65;font-weight:600;">
         🔨 Rabot béton — ${machine.outil_bmp} — Retrait ${machine.profondeur} de béton
-      </div>
-    `;
-  } else {
-    document.getElementById('machine-info-single').innerHTML = `
-      <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:6px">${machine.nom}</div>
-      <div style="font-size:13px;color:var(--text-muted)">⚡ ${machine.tension} &nbsp;|&nbsp; Ø outil ${machine.diam} mm &nbsp;|&nbsp; Ø machine ${machine.diamM} mm</div>
-    `;
-  }
-
-  // Aspirateur — 3ème cadre pleine largeur
-  const aspCard = document.getElementById('aspirateur-card');
-  const a = ASPIRATEURS[machine.nom];
-  if (a && aspCard) {
-    aspCard.style.display = 'block';
-    document.getElementById('aspirateur-content').innerHTML = `
-      <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
-        ${a.photo ? `<img src="${a.photo}" alt="${a.ref}" style="height:140px;width:180px;object-fit:contain;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:6px;flex-shrink:0;">` : ''}
-        <div>
-          <div style="font-size:10px;color:var(--or);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Aspirateur recommandé</div>
-          <div style="font-size:20px;font-weight:900;color:#fff;margin-bottom:4px;">${a.ref}</div>
-          <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">${a.desc} &nbsp;|&nbsp; ⚖ ${a.poids}</div>
-          ${a.alt ? (() => { const m = ASPI_MODELES[a.alt]; return `<div style="margin-top:6px;padding:6px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;font-size:11px;color:rgba(255,255,255,0.45);">2ème choix : <span style="color:rgba(255,255,255,0.7);font-weight:700;">${a.alt}</span>${m ? ` &nbsp;|&nbsp; ${m.desc} &nbsp;|&nbsp; ⚖ ${m.poids}` : ''}</div>`; })() : ''}
-        </div>
-      </div>
-    `;
-  } else if (aspCard) {
-    aspCard.style.display = 'none';
-  }
-  // Reset cards secondaires
-  const outilCardReset = document.getElementById('outil-photo-card');
-  if (outilCardReset) outilCardReset.style.display = 'none';
-  const aspCardReset = document.getElementById('aspirateur-card');
-  if (aspCardReset) aspCardReset.style.display = 'none';
-  const bmpCardReset = document.getElementById('bmp-preps-card');
-  if (bmpCardReset) bmpCardReset.style.display = 'none';
-
-  // BMP : pas d'outil, afficher préparations directement
-  if (machine.isBMP) {
+      </div>`;
     const bmpCard = document.getElementById('bmp-preps-card');
     if (bmpCard) {
       bmpCard.style.display = 'block';
-      // Les BMP font scarification / retrait béton (scores 28-40)
       const bmpCompatible = PREPS.filter(p => p.nom === 'Béton dur à scarifier' || p.nom === 'Béton très dur / chape armée' || p.nom === 'Épaisseur de dalle à diminuer');
       document.getElementById('bmp-preps-content').innerHTML = `
         <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
           ${bmpCompatible.map(p => `<span class="prep-badge" style="background:rgba(255,138,101,0.15);border:1px solid rgba(255,138,101,0.4);color:#ff8a65;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;">${p.icon} ${p.nom}</span>`).join('')}
         </div>
-        <div style="font-size:11px;color:var(--text-muted);font-style:italic;">Score de profondeur : ${machine.nom === 'BMP215E' ? '2-3mm' : machine.nom === 'BMP265E' ? '4-5mm' : '6-7mm'} — Outil : ${machine.outil_bmp}</div>
-      `;
+        <div style="font-size:11px;color:var(--text-muted);font-style:italic;">Score de profondeur : ${machine.nom === 'BMP215E' ? '2-3mm' : machine.nom === 'BMP265E' ? '4-5mm' : '6-7mm'} — Outil : ${machine.outil_bmp}</div>`;
+    }
+    // Aspirateur pour BMP
+    const aspCardBMP = document.getElementById('aspirateur-card');
+    const aBMP = ASPIRATEURS[machine.nom];
+    if (aBMP && aspCardBMP) {
+      aspCardBMP.style.display = 'block';
+      document.getElementById('aspirateur-content').innerHTML = buildAspirateurHTML(aBMP);
     }
     hideScore();
-    // Afficher aspirateur pour BMP aussi
-    const aspCardBMP = document.getElementById('aspirateur-card');
-    if (aspCardBMP) aspCardBMP.style.display = 'block';
     return;
   }
 
-  // Restaurer l'outil précédemment sélectionné s'il est compatible
+  document.getElementById('machine-info-single').innerHTML = `
+    <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:6px">${machine.nom}</div>
+    <div style="font-size:13px;color:var(--text-muted)">⚡ ${machine.tension} &nbsp;|&nbsp; Ø outil ${machine.diam} mm &nbsp;|&nbsp; Ø machine ${machine.diamM} mm</div>`;
+
+  // ── Aspirateur ──
+  const aspCard = document.getElementById('aspirateur-card');
+  const a = ASPIRATEURS[machine.nom];
+  if (a && aspCard) {
+    aspCard.style.display = 'block';
+    document.getElementById('aspirateur-content').innerHTML = buildAspirateurHTML(a);
+  } else if (aspCard) {
+    aspCard.style.display = 'none';
+  }
+
+  // ── Restaurer outil + calculer si compatible ──
   if (savedOutil && selOutil.querySelector(`option[value="${savedOutil}"]`)) {
     selOutil.value = savedOutil;
   }
-
-  // Si un outil est sélectionné et compatible → calculer le score
   const nomO = selOutil.value;
   if (nomO) {
     computeAndShow(nom, nomO);
   } else {
     showEmpty('Sélectionnez un outil');
   }
+}
+
+
+// ── Helper aspirateur HTML ──────────────────────────────
+function buildAspirateurHTML(a) {
+  const m = a.alt ? ASPI_MODELES[a.alt] : null;
+  return `<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+    ${a.photo ? `<img src="${a.photo}" alt="${a.ref}" style="height:140px;width:180px;object-fit:contain;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:6px;flex-shrink:0;">` : ''}
+    <div>
+      <div style="font-size:10px;color:var(--or);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Aspirateur recommandé</div>
+      <div style="font-size:20px;font-weight:900;color:#fff;margin-bottom:4px;">${a.ref}</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">${a.desc} &nbsp;|&nbsp; ⚖ ${a.poids}</div>
+      ${m ? `<div style="margin-top:6px;padding:6px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;font-size:11px;color:rgba(255,255,255,0.45);">2ème choix : <span style="color:rgba(255,255,255,0.7);font-weight:700;">${a.alt}</span> &nbsp;|&nbsp; ${m.desc} &nbsp;|&nbsp; ⚖ ${m.poids}</div>` : ''}
+    </div>
+  </div>`;
 }
 
 // ── Helpers bidirectionnels ──────────────────────────────
