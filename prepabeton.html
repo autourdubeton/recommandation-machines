@@ -929,9 +929,18 @@ function onMachineChange() {
   document.getElementById('meta-row').innerHTML = '';
   hideScore();
 
-  if (!nom) { showEmpty('Sélectionnez une machine compatible'); return; }
+  if (!nom) {
+    // Remettre tous les outils
+    repopulateOutils(null);
+    showEmpty('Sélectionnez une machine compatible');
+    return;
+  }
 
   const machine = MACHINES.find(m => m.nom === nom);
+
+  // Vider et re-peupler le select outil avec les outils compatibles
+  const savedOutil = selOutil.value;
+  selOutil.innerHTML = '<option value="">— Choisir un outil —</option>';
 
   // Groupe 1 : outils diamant (0-13)
   const diamantOutils = OUTILS.slice(0, OUTILS_DIAMANT_MAX + 1);
@@ -1104,12 +1113,14 @@ function onMachineChange() {
     return;
   }
 
-  // Filtrer les outils compatibles avec cette machine
-  repopulateOutils(nom);
+  // Restaurer l'outil précédemment sélectionné s'il est compatible
+  if (savedOutil && selOutil.querySelector(`option[value="${savedOutil}"]`)) {
+    selOutil.value = savedOutil;
+  }
 
-  // Si un outil est déjà sélectionné et compatible → calculer le score
+  // Si un outil est sélectionné et compatible → calculer le score
   const nomO = selOutil.value;
-  if (nomO && selOutil.querySelector(`option[value="${nomO}"]`)) {
+  if (nomO) {
     computeAndShow(nom, nomO);
   } else {
     showEmpty('Sélectionnez un outil');
@@ -1243,8 +1254,12 @@ function onOutilChange() {
   showOutilPhoto(nomO, null);
   document.getElementById('outil-photo-card').style.display = 'block';
 
+  // Restaurer la machine si toujours compatible
+  const machineRestored = nomM && selMachine.querySelector(`option[value="${nomM}"]`);
+  if (machineRestored) selMachine.value = nomM;
+
   // Si pas de machine choisie → attendre
-  if (!nomM || !selMachine.querySelector(`option[value="${nomM}"]`)) {
+  if (!machineRestored) {
     hideScore();
     showEmpty('Sélectionnez une machine compatible');
     return;
