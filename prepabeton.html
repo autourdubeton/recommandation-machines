@@ -934,6 +934,7 @@ function onMachineChange() {
   if (!nom) {
     repopulateOutils(null);
     document.getElementById('aspirateur-card').style.display = 'none';
+    document.getElementById('machine-photo-card').style.display = 'none';
     showEmpty('Sélectionnez une machine');
     return;
   }
@@ -1099,7 +1100,7 @@ function repopulateMachines(nomO) {
     opt.value = m.nom; opt.textContent = m.nom;
     selMachine.appendChild(opt);
   });
-  // Restaurer la sélection si toujours compatible
+  // Toujours restaurer la sélection courante si elle existe dans la liste
   if (current && selMachine.querySelector(`option[value="${current}"]`)) {
     selMachine.value = current;
   }
@@ -1196,11 +1197,16 @@ function onOutilChange() {
   const nomM = selMachine.value;
 
   if (!nomO) {
-    // Réinitialiser machine à la liste complète
+    // Remettre toutes les machines sans perdre la sélection courante
     repopulateMachines(null);
     hideScore();
-    showEmpty('Sélectionnez un outil');
     document.getElementById('outil-photo-card').style.display = 'none';
+    // Si une machine est déjà choisie, garder son affichage
+    if (nomM) {
+      showEmpty('Sélectionnez un outil');
+    } else {
+      showEmpty('Sélectionnez une machine');
+    }
     return;
   }
 
