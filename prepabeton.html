@@ -1093,8 +1093,9 @@ function onOutilChange() {
   const outilBox = document.getElementById('outil-photo-box');
   if (outilBox) {
     if (outilPhoto) {
-      const smallOutils = ['Rouleau 28P','Rouleau 32P','Rouleau 42E','Rouleau 80E','Rouleau 300E','Plateau Beads 125mm'];
-      const bgSize = smallOutils.includes(nomO) ? '300%' : '90%';
+      const smallOutils = ['Rouleau 28P','Rouleau 32P','Rouleau 42E','Rouleau 80E','Rouleau 300E'];
+      const mediumOutils = ['Plateau Beads 125mm'];
+      const bgSize = smallOutils.includes(nomO) ? '300%' : mediumOutils.includes(nomO) ? '130%' : '90%';
       outilBox.style.cssText = 'width:180px;height:140px;border-radius:12px;background-image:url("' + outilPhoto + '");background-size:' + bgSize + ';background-repeat:no-repeat;background-position:center;background-color:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);';
       outilBox.innerHTML = '';
     } else {
